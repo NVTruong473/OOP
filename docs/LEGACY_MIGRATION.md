@@ -19,7 +19,7 @@ structure was rewritten.
   file operations, integer summation).
 - **KTQT2 / review material** — `Car/LuxuryCar` polymorphism and `Student/ITStudent/MathStudent`
   processing.
-- **521H0324_OOP final exercise** — AVL-backed student management. Core methods in `AVL` and
+- **Final OOP exercise** — AVL-backed student management. Core methods in `AVL` and
   `StudentManagement` were placeholders (`insert`, `search`, `delete`, `addStudent`, `removeStudent`,
   `undo`, `redo`, `scoreTree`). The rebuild completes those ideas in `StudentAvlTree` and
   `StudentRegistry`.
