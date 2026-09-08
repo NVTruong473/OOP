@@ -1,0 +1,46 @@
+name: Extract legacy exercises
+
+on:
+  push:
+    branches: [oop-leetcode-rebuild]
+    paths:
+      - '.github/workflows/extract-legacy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: oop-leetcode-rebuild
+      - name: Extract Java sources from legacy ZIP submissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf legacy-extracted
+          mkdir -p legacy-extracted
+          shopt -s nullglob
+          for archive in *.zip; do
+            name="${archive%.zip}"
+            mkdir -p "legacy-extracted/$name"
+            unzip -q "$archive" -d "legacy-extracted/$name" || true
+          done
+          find legacy-extracted -type d -name '__MACOSX' -prune -exec rm -rf {} + || true
+          find legacy-extracted -type f \( -name '.DS_Store' -o -name '._*' -o -name '*.class' \) -delete || true
+          find legacy-extracted -type f ! -name '*.java' ! -name '*.txt' ! -name '*.md' -delete || true
+          find legacy-extracted -type d -empty -delete || true
+      - name: Commit extracted sources
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add legacy-extracted
+          if git diff --cached --quiet; then
+            echo 'No extracted sources to commit.'
+          else
+            git commit -m 'chore: extract legacy Java sources for migration audit'
+            git push origin HEAD:oop-leetcode-rebuild
+          fi
