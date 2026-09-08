@@ -5,6 +5,10 @@ on:
     branches: [oop-leetcode-rebuild]
     paths:
       - '.github/workflows/apply-rebuild.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-rebuild.yml'
 
 permissions:
   contents: write
