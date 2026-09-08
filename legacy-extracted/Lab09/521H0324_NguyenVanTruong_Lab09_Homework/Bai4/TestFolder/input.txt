@@ -1,2 +1,0 @@
-Java programming is versatile.
-The longestwordhere should be identified.

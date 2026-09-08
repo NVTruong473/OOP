@@ -1,2 +1,0 @@
-This is the content of file1.
-File operations are useful in Java.
