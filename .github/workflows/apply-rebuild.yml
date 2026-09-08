@@ -5,10 +5,6 @@ on:
     branches: [oop-leetcode-rebuild]
     paths:
       - '.github/workflows/apply-rebuild.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - '.github/workflows/apply-rebuild.yml'
 
 permissions:
   contents: write
@@ -35,8 +31,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p /tmp/workflows
+          cp .github/workflows/apply-rebuild.yml /tmp/workflows/apply-rebuild.yml
+          if [ -f .github/workflows/extract-legacy.yml ]; then
+            cp .github/workflows/extract-legacy.yml /tmp/workflows/extract-legacy.yml
+          fi
+
           git rm -r --ignore-unmatch .
           tar -xzf /tmp/oop-rebuild.tar.gz -C .
+
+          mkdir -p .github/workflows
+          cp /tmp/workflows/apply-rebuild.yml .github/workflows/apply-rebuild.yml
+          if [ -f /tmp/workflows/extract-legacy.yml ]; then
+            cp /tmp/workflows/extract-legacy.yml .github/workflows/extract-legacy.yml
+          fi
+          rm -f .github/workflows/ci.yml
+
           git add -A
           git status --short
 
@@ -46,5 +56,5 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'feat: rebuild coursework as 80 solved OOP challenges'
+          git commit -m 'feat: rebuild coursework as OOP challenge repository'
           git push origin HEAD:oop-leetcode-rebuild
